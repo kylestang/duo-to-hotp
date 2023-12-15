@@ -8,7 +8,7 @@ export async function onRequestPost(context) {
     }
 
     console.log(dstUrl.toString());
-    const newRequest = new Request(dstUrl.toString(), {method: 'POST'});
+    const newRequest = new Request(dstUrl, {method: 'POST'});
     
     const response = await fetch(newRequest)
 

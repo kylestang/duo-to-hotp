@@ -52,7 +52,7 @@ async function activateDevice(host, code) {
 
     // Avoid CORS issue
     const url = '/proxy?url=' + encodeURIComponent(
-        activation + '?' + params
+        activation + '?' + encodeURIComponent(params)
     );
 
     const response = await fetch(url, {
