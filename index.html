@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="css/pico.min.css">
+        <title>Duo to HOTP</title>
+    </head>
+    <script src="js/jsQR.min.js"></script>
+    <script src="js/qr-creator.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        let generateButton;
+        let fileUpload;
+
+        function imageChanged() {
+            if (fileUpload.files.length > 0) {
+                generateButton.removeAttribute('disabled')
+            } else {
+                generateButton.setAttribute('disabled', '')
+            }
+        }
+
+        function generate() {
+            generateButton.setAttribute('aria-busy', 'true');
+            generateButton.setAttribute('disabled', '');
+            fileUpload.setAttribute('disabled', '');
+
+            const file = fileUpload.files[0];
+            convert(file).then((qrContents) => {
+                const qr = document.getElementById('qrcode');
+                const qrContainer = document.getElementById('qr-container');
+
+                QrCreator.render({
+                    text: qrContents,
+                    radius: 0.4,
+                    fill: '#000000',
+                    background: '#FFFFFF'
+                }, qr);
+
+                qrContainer.removeAttribute('hidden');
+            }).catch((err) => {
+                const errorCard = document.getElementById('error');
+                errorCard.textContent = "Error: " + err.message;
+                errorCard.removeAttribute('hidden');
+            }).finally(() => {
+                generateButton.setAttribute('hidden', '');
+                fileUpload.setAttribute('hidden', '');
+            });
+        }
+
+        function setup() {
+            generateButton = document.getElementById('generate');
+            fileUpload = document.getElementById('upload');
+
+            fileUpload.addEventListener('change', imageChanged, false);
+            generateButton.addEventListener('click', generate, false);
+        }
+
+        window.onload = setup;
+    </script>
+
+    <body>
+        <main class="container">
+            <h1>Duo to HOTP</h1>
+            <details>
+                <summary>What is this?</summary>
+                <p>
+                    I didn't want to download the Duo app on my phone.
+                    So I made this!
+                    It takes a code for Duo's proprietary 2FA system and gives you a 
+                    <a href="https://en.wikipedia.org/wiki/HMAC-based_one-time_password">
+                        HMAC based one-time password
+                    </a> that can be used with just about any OTP app such as
+                    Google Authenticator.
+                </p>
+            </details>
+            <details>
+                <summary>How do I use it?</summary>
+                <p><ol>
+                    <li>Go to <a href="https://www.uvic.ca/netlink/manage/mfa/manageDuo">
+                            https://www.uvic.ca/netlink/manage/mfa/manageDuo</a>
+                            and login</li>
+                    <li>Click "Add another device", "Tablet", "Android", "I've installed Duo"</li>
+                    <li>Take a screenshot of the QR code and upload it below</li>
+                    <li>Click "Generate"</li>
+                    <li>Scan the generated QR code with any authenticator app that supports HOTP</li>
+                </ol></p>
+            </details>
+            <input id=upload type=file accept="image/*" />
+            <button disabled id=generate>Generate</button>
+            <div
+                hidden
+                id=qr-container 
+                style="display:flex; flex-direction:column; align-items:center;">
+                <div id=qrcode 
+                    style="padding:5px;
+                    margin-top:1em;
+                    margin-bottom:1em;
+                    background-color:white;
+                    width:fit-content;
+                    border-radius: 0.25rem;">
+                </div>
+                <p>Scan me with an authenticator app to add Duo!</p>
+            </div>
+            <article hidden id=error></article>
+        </main>
+    </body>
+
+</html>
