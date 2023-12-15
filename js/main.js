@@ -51,14 +51,12 @@ async function activateDevice(host, code) {
     });
 
     // Avoid CORS issue
-    const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(
+    const url = document.location.host + '/proxy?url=' + encodeURIComponent(
         activation + '?' + params
     );
 
-    // TODO: Check if request failed
     const response = await fetch(url, {
         method: "POST",
-        mode: 'cors',
     });
 
     const result = await response.json();
