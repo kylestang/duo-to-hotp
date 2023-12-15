@@ -1,20 +1,20 @@
 export async function onRequestPost(context) {
-    let srcUrl = new URL(context.request.url);
-    let rawUrl = decodeURIComponent(srcUrl.searchParams.get('url'));
-    let dstUrl = new URL(rawUrl);
+  const srcUrl = new URL(context.request.url);
+  const rawUrl = decodeURIComponent(srcUrl.searchParams.get("url"));
+  const dstUrl = new URL(rawUrl);
 
-    if (! /^api-\w+\.duosecurity\.com$/.test(dstUrl.hostname)) {
-        return new Response('Bad hostname', {status: 400});
-    }
+  if (!/^api-\w+\.duosecurity\.com$/.test(dstUrl.hostname)) {
+    return new Response("Bad hostname", { status: 400 });
+  }
 
-    const newRequest = new Request(dstUrl, {method: 'POST'});
-    
-    const response = await fetch(newRequest)
+  const newRequest = new Request(dstUrl, { method: "POST" });
 
-    const newHeaders = new Headers(response.headers);
-    newHeaders.set('Access-Control-Allow-Origin', '*');
+  const response = await fetch(newRequest);
 
-    const newResponse = new Response(response.body, {headers: newHeaders});
+  const newHeaders = new Headers(response.headers);
+  newHeaders.set("Access-Control-Allow-Origin", "*");
 
-    return newResponse;
+  const newResponse = new Response(response.body, { headers: newHeaders });
+
+  return newResponse;
 }
