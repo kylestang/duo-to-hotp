@@ -7,6 +7,7 @@ export async function onRequestPost(context) {
         return new Response('Bad hostname', {status: 400});
     }
 
+    console.log(dstUrl.toString());
     const newRequest = new Request(dstUrl.toString(), {method: 'POST'});
     
     const response = await fetch(newRequest)
