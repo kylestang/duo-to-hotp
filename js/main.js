@@ -51,7 +51,7 @@ async function activateDevice(host, code) {
     });
 
     // Avoid CORS issue
-    const url = document.location.host + '/proxy?url=' + encodeURIComponent(
+    const url = '/proxy?url=' + encodeURIComponent(
         activation + '?' + params
     );
 
